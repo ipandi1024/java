@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	
+	<!-- 通过构造器进行依赖注入， 必须要有对应的构造器 -->
+	<bean id="u" class="com.woniuxy.k_di.User">
+		<constructor-arg value="1" />
+		<constructor-arg value="袁绍" />
+	</bean>	
+	
+	<!-- 通过setter进行依赖注入，必须要有setter方法，且他们必须都是public修饰的！ -->
+	<bean id="u2" class="com.woniuxy.k_di.User">
+		<property name="id" value="2" />
+		<property name="name" value="孙坚" />
+	</bean>	
+
+	<!-- 通过c命名空间，进行依赖注入-->
+	<bean id="u3" class="com.woniuxy.k_di.User" c:id="3" c:name="刘表" />
+	
+	<!-- 通过p命名空间，进行依赖注入 -->
+	<bean id="u4" class="com.woniuxy.k_di.User" p:id="4" p:name="刘璋" />
+	
+	
+	<bean id="c5" class="com.woniuxy.k_di.Car">
+		<property name="brand" value="风火轮" />
+		<property name="color" value="火红" />
+	</bean>
+	<bean id="u5" class="com.woniuxy.k_di.User">
+		<property name="id" value="5" />
+		<property name="name" value="哪吒" />
+		<property name="car" ref="c5" />
+	</bean>
+	
+	<bean id="c6" class="com.woniuxy.k_di.Car" p:brand="赤兔马" p:color="红色" />
+	<bean id="u6" class="com.woniuxy.k_di.User" p:id="6" p:name="吕布" p:car-ref="c6" />
+	
+	
+	<bean id="c7" class="com.woniuxy.k_di.Car" p:brand="狮子"  p:color="金黄色" />
+	<bean id="u7" class="com.woniuxy.k_di.User" c:id="7" c:name="文殊菩萨" c:car-ref="c7" />
+	
+	<!-- 使用内部bean -->
+	<bean id="u8" class="com.woniuxy.k_di.User" c:id="7" c:name="地藏菩萨" >
+		<property name="car">
+			<!-- 内部bean只能使用一次，外界无法引用！！ -->
+			<bean id="c8" class="com.woniuxy.k_di.Car">
+				<property name="brand" value="谛听" />
+				<property name="color" value="灰色" />
+			</bean>
+		</property>
+	</bean>
+	
+	
+	<bean id="c9" class="com.woniuxy.k_di.Car" />
+	<bean id="u9" class="com.woniuxy.k_di.User" >
+		<property name="id" value="9"></property>
+		<property name="name" value="项羽"></property>
+		<property name="car" ref="c9"></property>
+		<property name="car.brand" value="乌骓马"></property>
+		<property name="car.color" value="灰色"></property>
+	</bean>
+	
+	
+	<bean id="c10" class="com.woniuxy.k_di.Car">
+		<property name="brand" value="汗血宝马" />
+		<property name="color"><null /></property>
+	</bean>
+	
+</beans>
+
+
+

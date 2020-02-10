@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 创建bean的第1种方式： 使用类的无参构造器 -->
+	<bean id="u" class="com.woniuxy.i_createbean.User">
+		<property name="id" value="333" />
+		<property name="name" value="秦桧" />
+	</bean>
+	
+	
+	<!-- 
+		创建bean的第2种方式： 使用静态工厂（不是设计模式中的工厂）
+		如果在bean元素中写出了factory-method，则就会把factory-method所指定的方法所返回的对象放入容器中！
+		如果在bean元素中定义定义出factory-method，则就会把class指定的类本身的实例存入容器中！
+	-->
+	<bean id="u2" class="com.woniuxy.i_createbean.UserFactory" factory-method="getUser">
+	</bean>	
+	
+	
+	<!-- 
+		创建bean的第3种方式： 使用实例工厂（不是设计模式中的工厂）
+		如果在bean元素中写出了factory-method，则就会把factory-method所指定的方法所返回的对象放入容器中！
+		如果在bean元素中定义定义出factory-method，则就会把class指定的类本身的实例存入容器中！
+	-->
+	<bean id="uf" class="com.woniuxy.i_createbean.UserFactory" />
+	<bean id="u3" factory-bean="uf" factory-method="getUser2">
+	</bean>	
+	
+	
+	
+	
+</beans>

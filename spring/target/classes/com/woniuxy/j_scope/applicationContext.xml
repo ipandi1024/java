@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 
+		scope属性
+		1. singleton， 表示单例， 表示容器只会实例化类的一个实例！  (默认值)
+				此时，ApplicationContext创建bean的时机就是创建spring ioc容器的时候。
+				注意，就算scope取值为singleton，这也不是单例模式！！ 仅仅是容器保证只实例化一个类的对象而已，并不是“单例模式”
+		2. prototype， 表示多例
+				此时，ApplicationContext创建bean的时机就是从容器中获取bean的时候，才实例化bean。
+	 -->
+	<bean id="u" class="com.woniuxy.j_scope.User" scope="prototype">
+		<property name="id" value="555" />
+		<property name="name" value="刘邦" />
+	</bean>	
+	
+	
+	<bean  class="com.woniuxy.j_scope.User">
+		<property name="id" value="666" />
+		<property name="name" value="董卓" />
+	</bean>	
+	
+	<bean  class="com.woniuxy.j_scope.User">
+		<property name="id" value="777" />
+		<property name="name" value="袁术"  />
+	</bean>	
+	
+</beans>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<version>1</version>
+	<pluginVersion><![CDATA[3.9.8.201903260659-RELEASE]]></pluginVersion>
+	<configSuffixes>
+		<configSuffix><![CDATA[xml]]></configSuffix>
+	</configSuffixes>
+	<enableImports><![CDATA[false]]></enableImports>
+	<configs>
+		<config>src/main/java/com/woniuxy/e_hello/applicationContext.xml</config>
+		<config>src/main/java/com/woniuxy/f_interface/applicationContext.xml</config>
+		<config>src/main/java/com/woniuxy/q_mix/applicationContext.xml</config>
+		<config>src/main/java/com/woniuxy/s_aop/applicationContext.xml</config>
+		<config>src/main/java/com/woniuxy/t_xmlaop/applicationContext.xml</config>
+	</configs>
+	<autoconfigs>
+	</autoconfigs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>

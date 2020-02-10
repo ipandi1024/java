@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+	<bean id="c" class="com.woniuxy.l_autowire.Car" p:brand="宝马" p:color="白色" />
+	<bean id="c2" class="com.woniuxy.l_autowire.Car" p:brand="奥巴马" p:color="黑色" />
+	
+	<!-- 
+		bean元素有一个autowire属性，用于控制自动装配策略：
+		1. byType 按照类型自动装配
+			a. 如果按照类型找到一个，就装配成功！
+			b. 如果按照类型找到多个，就抛出异常！
+			c. 如果按照类型一个都找不到，就为默认值，总之不会报错！
+		2. byName 按照名称装配
+			a. 如果按找名称到一个，就装配成功！
+			b. 如果按找名称到多个，这种情况不可能在xml配置方式中出现。一旦有两个id相同的bean元素出现，就会报错！进入不到自动装配哪一步
+			c. 如果按一名称个都找不到，就为默认值，总之不会报错！
+	 -->
+
+	<bean id="u" class="com.woniuxy.l_autowire.User"
+		p:id="11" p:name="李小璐" autowire="byName" />
+	
+	<!-- 
+		IOC,inverse of controller， 控制反转
+		1. 以前需要一个对象，就要在程序中实例化，现在是有spring ioc容器提前实例化好，等到需要使用的时候，直接向容器索取即可。
+		   这样，实例化对象的权利，就从程序中，转移到了程序之外的容器中。
+		2. 以前给对象的属性赋值，是需要自己手动指定值的，现在是有ioc容器来自动装配完成的，至于怎么装配（按名称还是按类型），就由
+		容器决定。
+	 -->
+</beans>
+
+
+
+
+

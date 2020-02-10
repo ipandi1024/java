@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+
+	<bean id="f" class="com.woniuxy.k_di2.Foo">
+		<property name="list">
+			<list>
+				<value>1</value>
+				<value>haha</value>
+				<value>5.6</value>
+				<value>true</value>
+			</list>
+		</property>
+		<property name="set">
+			<set>
+				<value>范特西</value>
+				<value>范特西</value>
+				<value>周杰伦</value>
+				<value>周杰伦</value>
+				<value>双节棍</value>
+				<value>双节棍</value>
+			</set>
+		</property>
+		<property name="map">
+			<map>
+				<entry key="a" value="关公" />
+				<entry key="b" value="包公" />
+				<entry key="c" value="周公" />
+				<entry key="a" value="老公" />
+			</map>
+		</property>
+		<property name="strs">
+			<array>
+				<value>老虎</value>
+				<value>老鼠</value>
+				<value>傻傻分不清楚</value>
+			</array>
+		</property>
+		<property name="props">
+			<props>
+				<prop key="a">书包</prop>
+				<prop key="b">钱包</prop>
+				<prop key="c">豆包</prop>
+			</props>
+		</property>
+		
+	</bean>	
+	
+	
+	<bean id="u2" class="com.woniuxy.k_di2.User" p:id="1" p:name="张无忌" />
+	
+	<bean id="f2" class="com.woniuxy.k_di2.Foo">
+		<property name="list">
+			<list>
+				<value>乾坤大挪移</value>
+				<ref bean="u2" />
+			</list>
+		</property>
+	</bean>
+	
+	
+	<util:constant static-field="com.woniuxy.k_di2.Bar.ss" id="haha" />
+	
+	<bean id="bar" class="com.woniuxy.k_di2.Bar" />
+	
+	<util:property-path path="bar.ss2" id="hehe" />
+	
+	<util:list id="aa">
+		<value>北冥神功</value>
+		<value>独孤九剑</value>
+		<value>凌波微步</value>
+		<ref bean="haha"/>
+		<ref bean="hehe"/>
+		<value>1&lt;2</value>
+		<value><![CDATA[3<4<5<6<7<8]]></value>
+	</util:list>
+	
+	<util:set id="bb">
+		<value>鼠牛虎兔</value>
+		<value>龙蛇马月</value>
+		<value>猴鸡狗猪</value>
+	</util:set>
+	
+	<util:map id="cc">
+		<entry key="a" value="白羊"></entry>
+		<entry key="b" value="狮子"></entry>
+		<entry key="c" value="射手"></entry>
+	</util:map>
+	
+	<util:properties id="dd">
+		<prop key="x">甲</prop>
+		<prop key="y">乙</prop>
+		<prop key="z">丙</prop>
+	</util:properties>
+	
+	<bean id="f3" class="com.woniuxy.k_di2.Foo" p:list-ref="aa" p:set-ref="bb" p:map-ref="cc"
+		p:props-ref="dd" p:strs-ref="aa">
+	</bean>
+	
+</beans>
+
+
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean class="com.woniuxy.q_mix2.RootConfig" />
+
+	<bean id="u" class="com.woniuxy.q_mix2.User" autowire="byType">
+		<property name="id" value="33" />
+		<property name="name" value="武则天" />
+	</bean>
+
+</beans>

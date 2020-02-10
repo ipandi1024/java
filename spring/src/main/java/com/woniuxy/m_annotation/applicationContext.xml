@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<!-- 
+		让spring框架，去扫描指定的包，只会扫除所有的字节码文件，其余的文件不管 
+		
+		在这里扫描的就是m包，就能扫到4个文件，其中3个是class文件，1个xlm文件。
+		
+		只处理class文件。
+		
+		扫到class文件，又能咋？ 如果又扫到class文件，又发现类上有特定的注解，则spring框架就会
+		把该类的实例new出来，再放入ioc容器中！
+		
+		以上所说的特定注解，有4个：
+		@Component @Service @Controller @Repository
+		
+		以上4个注解，效果一样，用谁都一样！！ 问题是，为什么还要分4个？
+		就是为了有语义上的区别，毕竟注解，也能承担注释的功能!
+		@Controller 专门用于注解控制器类
+		@Service  	专门用于注解业务类
+		@Repository 专门用于注解dao层类
+		@Component  如果一个类，既不是控制器，也不是业务层、也不是dao层的类，那么就统统使用该注解！
+	-->
+	<context:component-scan base-package="com.woniuxy.m_annotation" />
+	
+</beans>
+
+
+
+
+
