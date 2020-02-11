@@ -1,0 +1,234 @@
+STEP1:simple方式
+===============================================================
+1:pom.xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+2:在application.properties添加rabbitmq的相关信息：
+	spring.application.name=boot-rabbitmq
+	spring.rabbitmq.host=127.0.0.1
+	spring.rabbitmq.port=5672
+	spring.rabbitmq.username=guest
+	spring.rabbitmq.password=guest
+
+	spring: 
+	  rabbitmq:
+	    host: 127.0.0.1
+	    port: 5672
+	    username: guest
+	    password: guest  
+
+3:配置队列：
+	@Configuration
+	public class RabbitMqConfig {
+		@Bean
+		@ConditionalOnMissingBean(name="queue")//可选
+		public Queue getQueue() {
+			return new Queue("laohanqueue");
+		}
+	}
+
+
+
+4、发送者通过Controller类发送消息：
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			String message = "message is "+new Date();
+			amqpTemplate.convertAndSend("laohanqueue",message);
+			return message;
+		}
+	}
+
+5: 接受消息：
+	@Component
+	@RabbitListener(queues="laohanqueue")
+	public class Reveice {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("您有新的短消息"+msg);
+		}
+	}
+
+注意，发送者和接收者的queue name必须一致，不然不能接收
+===============================================================
+STEP1.1:simple带ack方式
+
+生产者
+	yml
+	server: 
+	  port: 9000
+	  
+	spring:
+	  rabbitmq:
+	    addresses: localhost
+	    port: 5672
+	    username: guest
+	    password: guest  
+
+	配置队列
+	@Configuration
+	public class MqConfig {
+		@Bean
+		public Queue getQueue() {
+			return new Queue("directhanqueue");
+		}
+	}
+
+	发送消息
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+	
+		
+		@RequestMapping("/send")
+		public String send() {
+			amqpTemplate.convertAndSend("directhanqueue2", "今天天气真正好"+i+"!");
+			return "消息发送成功"+i;
+		}
+	}
+
+消费者：
+	yml
+	server: 
+	  port: 9001
+	  
+	spring:
+	  rabbitmq:
+	    addresses: localhost
+	    port: 5672
+	    username: guest
+	    password: guest  
+	    publisher-returns: true
+	    publisher-confirms: true
+	    listener:
+	      simple:
+		acknowledge-mode: manual
+		prefetch: 1
+	      direct:
+		acknowledge-mode: manual  
+		prefetch: 1 
+
+	@Component
+	@RabbitListener(queues="directhanqueue2")
+	public class Receive {
+		@RabbitHandler
+		public void rev(String msg,Channel channel,Message message) throws IOException, InterruptedException {
+			Thread.sleep(10000);
+			System.out.println("接受到消息1"+msg);
+			channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+		}
+	}
+
+然后完成一个生产者，2个消费者，则产生对等轮询。并且有消息验证。
+===============================================================
+STEP5.1:Boot Topic 带exchange ack方式
+
+生产者
+	server: 
+	  port: 9000
+	  
+	spring:
+	  rabbitmq:
+	    addresses: localhost
+	    port: 5672
+	    username: guest
+	    password: guest  
+	
+	配置中心
+		@Configuration
+		public class MqConfig {
+			@Bean
+			public Queue queue1() {
+				return new Queue("shanxi.xian");
+			}
+			@Bean
+			public Queue queue2() {
+				return new Queue("shanxi.hanzhong");
+			}
+			@Bean
+			public TopicExchange createChange() {
+				return new TopicExchange("bootExchange");
+			}
+			
+			@Bean
+			Binding bandingExchange(Queue queue1,TopicExchange topicExchange) {
+				return BindingBuilder.bind(queue1).to(topicExchange).with("shanxi.hanzhong");
+			}
+			
+			@Bean
+			Binding bandingExchanges(Queue queue2,TopicExchange topicExchange) {
+				return BindingBuilder.bind(queue2).to(topicExchange).with("shanxi.#");
+			}
+		}
+
+	发送数据
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			i++;
+			amqpTemplate.convertAndSend("bootExchange", "shanxi.xian", "西安今天天气真正好"+i+"!");
+			return "消息发送成功"+i;
+		}
+		
+		@RequestMapping("/send2")
+		public String send2() {
+			i++;
+			amqpTemplate.convertAndSend("bootExchange", "shanxi.hanzhong", "汉中今天天气真正好"+i+"!");
+			return "消息发送成功"+i;
+		}
+
+消费者
+	yml
+		server: 
+	  port: 9001
+	  
+	spring:
+	  rabbitmq:
+	    addresses: localhost
+	    port: 5672
+	    username: guest
+	    password: guest  
+	    publisher-returns: true
+	    publisher-confirms: true
+	    listener:
+	      simple:
+		acknowledge-mode: manual
+		prefetch: 1
+	      direct:
+		acknowledge-mode: manual  
+		prefetch: 1 
+
+	消费者1：
+		@Component
+		@RabbitListener(queues="shanxi.xian")
+		public class Receive {
+			@RabbitHandler
+			public void rev(String msg,Channel channel,Message message) throws IOException, InterruptedException {
+				Thread.sleep(5000);
+				System.out.println("西安接受到消息1"+msg);
+				channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+			}
+		}
+	消费者2：
+		@Component
+		@RabbitListener(queues="shanxi.hanzhong")
+		public class Receive2 {
+			@RabbitHandler
+			public void rev(String msg,Channel channel,Message message) throws IOException, InterruptedException {
+				Thread.sleep(5000);
+				System.out.println("汉中接受到消息2"+msg);
+				channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+			}
+		}
+===============================================================
+===============================================================

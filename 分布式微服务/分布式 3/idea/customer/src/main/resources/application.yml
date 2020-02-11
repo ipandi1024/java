@@ -1,0 +1,19 @@
+server:
+  port: 10000
+
+spring:
+  application:
+    name: customer
+
+user:
+  userSericeURL: http://PROVIDER/
+
+eureka:
+  client:
+    service-url:
+      defaultZone:
+        http://admin:ilovelaohan@localhost:9999/eureka/,http://admin:ilovelaohan@localhost:9998/eureka/,http://admin:ilovelaohan@localhost:9997/eureka/ #Eureka的服务器的地址
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true

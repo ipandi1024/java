@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		
+		<!-- 命名视图 -->
+		<div id="app">
+			<router-view name="aa"></router-view>
+			<router-view name="bb"></router-view>
+		</div>
+		
+		<template id="t1">
+			<div>
+				登录界面
+			</div>
+		</template>
+		
+		<template id="t2">
+			<div>
+				注册界面
+			</div>
+		</template>
+		
+		<script>
+			var t1 = {
+				template: "#t1"
+			};
+			
+			var t2 = {
+				template: "#t2"
+			};
+			
+			var router = new VueRouter({
+				routes: [
+					{
+						path:"/t1", components:{
+							"aa": t1,
+							"bb": t2
+						},
+					},
+					{
+						path:"/t2", components:{
+							"aa": t2,
+							"bb": t1
+						}
+					}
+				]
+			});
+			
+			var app = new Vue({
+				el: "#app",
+				data: {
+				},
+				router
+			});
+		</script>
+		
+	</body>
+</html>

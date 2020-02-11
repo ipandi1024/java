@@ -1,0 +1,24 @@
+server: 
+  port: 10000
+  
+spring: 
+  application:
+    name: zuul
+    
+#做转发
+
+zuul: 
+  routes:
+    goods: #第一个键 ，键是可以自己定义的，叫什么都可以
+      path: /goods/**    #今后对当前路由的地址是 /goods的所有操作，都把请求转交给下面的url
+      url: http://localhost:9000/    
+      # 意味着你原来的提供者的访问路径
+        #http://localhost:9000/findAll
+      #现在路由的访问规则是
+        #http://localhost:10000/goods/findAll   
+        #路由的IP地址和端口   + 你在路由中描述的键 + 提供者的API名称 
+    orders: #第一个键 ，键是可以自己定义的，叫什么都可以
+      path: /orders/**    #今后对当前路由的地址是 /goods的所有操作，都把请求转交给下面的url
+      url: http://localhost:9001/    
+      
+    

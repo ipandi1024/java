@@ -1,0 +1,32 @@
+server: 
+  port: 9001
+  
+spring: 
+  application:
+    name: xiaofei
+    
+user:
+  userSericeURL: http://goods/ 
+  
+hystrix:  
+    threadpool: 
+      default: 
+        coreSize : 10   #核心线程数 200 #并发执行的最大线程数，默认10  
+        
+management:
+    endpoints:
+      web:
+        exposure:
+          include: hystrix.stream
+       
+   
+    
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: 
+        http://localhost:8888/eureka/
+  instance:
+    prefer-ip-address: true            

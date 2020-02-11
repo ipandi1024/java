@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		
+		<div id="app">
+			firstname: <input type="text" v-model="firstname" > <br>
+			lastname: <input type="text" v-model="lastname" > <br>
+			<span> {{fullname}} </span>
+			
+			
+		</div>
+		
+		<script>
+			var app = new Vue({
+				el: "#app",
+				data: {
+					firstname:'',
+					lastname:''
+				},
+				/*
+					1. 在computed中，所定义的属性，也是Vue实例的属性
+					   也就是说，Vue实例的属性，一共有2处来源: a. data b. computed
+					2. 在computed中，定义的属性是“计算属性”， 所谓的计算属性，值就是对应的函数所返回的值！
+						而且只要组成计算属性值的其他属性，任何一个变化了，都会引起计算属性重新计算值！
+						
+					注意， 计算属性，不能双向绑定， 只能单向绑定！！
+				*/
+				computed: {
+					fullname: function() {
+						return this.firstname + " " + this.lastname;
+					}
+				}
+			});
+		</script>
+		
+	</body>
+</html>

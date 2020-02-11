@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+  <!--指定特定数据库的jdbc驱动jar包的位置-->
+   <classPathEntry location="F:\mysql-connector-java-5.0.3-bin.jar"/>	
+  <context id="context1" >
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/ybls" userId="root" password="ilovelaohan" />
+    <javaModelGenerator targetPackage="com.woniu.provider.entity" targetProject="src/main/java" ></javaModelGenerator>
+    <sqlMapGenerator targetPackage="com.woniu.provider.mapper" targetProject="src/main/java" ></sqlMapGenerator>
+    <javaClientGenerator targetPackage="com.woniu.provider.mapper" targetProject="src/main/java" type="XMLMAPPER" />
+    <table schema="" tableName="userinfo" ></table>
+  </context>
+</generatorConfiguration>

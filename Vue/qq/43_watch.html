@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!-- 使用watch属性，来代替键盘事件-->
+		<div id="app">
+			firstname: <input type="text" v-model="firstname" > <br>
+			lastname: <input type="text" v-model="lastname"> <br>
+			<span>{{fullname}}</span>
+		</div>
+		
+		<script>
+			var app = new Vue({
+				el: "#app",
+				data: {
+					firstname:'',
+					lastname:'',
+					fullname:''
+				},
+				watch: {
+					// 监听firstname属性的变化,只要firstname变化了,就会调用对应的函数!
+					// 在watch监听的属性所对应的函数中,可以接受2个参数: 新值 和 旧值
+					firstname(newVal, oldVal) {
+						this.fullname = newVal + this.lastname;
+					},
+					lastname(newVal, oldVal) {
+						this.fullname = this.firstname + newVal;
+					}
+				}
+				
+			});
+		</script>
+		
+	</body>
+</html>

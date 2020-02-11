@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+			<div id="app">
+				<c></c>
+			</div>
+			
+			<!-- 
+				组件的内容， 当把组件的内容独立写到标签中的时候，必须使用template元素！！ 
+				
+				注意：
+					1.template元素本身不算做组件的内容，组件的内容是template原理面的内容！
+					2.无论使用哪种方式创建组件，组件的内容，必须只有一个根元素！
+					3.作为根元素的标记，最好使用div
+			-->
+			<template id="t1">
+					<div>
+						<div>
+							东方不败！！
+						</div>
+						<div>
+							西门吹雪
+						</div>
+					</div>
+			</template>
+			
+			<script>
+				
+				// 创建组件的方式三
+				Vue.component("c", {
+					template: "#t1"
+				});
+				
+				var app = new Vue({
+					el:"#app",
+					data: {
+					}
+				});
+			</script>
+	</body>
+</html>

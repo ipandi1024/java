@@ -1,0 +1,80 @@
+Topic Exchange的使用配置
+Topic Exchange是RabbitMQ中最灵活的一种方式，它能够根据routing_key自由的绑定不同的队列，
+	可以适用绝大部分的项目需求
+
+1:
+	@Configuration
+	public class RabbitMqConfig {
+		final static String message = "topic.message";
+		final static String messages = "topic.messages";
+		
+		
+		@Bean
+		public Queue queue() {
+			return new Queue(message);
+		}
+		
+		@Bean
+		public Queue queues() {
+			return new Queue(messages);
+		}
+		
+		@Bean
+		TopicExchange getExchange() {
+			return new TopicExchange("exchange");
+		}
+		
+		@Bean
+		Binding bindingExchangeMessage(Queue queue,TopicExchange topicExchange) {
+			return BindingBuilder.bind(queue).to(topicExchange).with("topic.message");
+		}
+		
+		@Bean
+		Binding bindingExchangeMessages(Queue queues,TopicExchange topicExchange) {
+			return BindingBuilder.bind(queues).to(topicExchange).with("topic.#");
+		}
+	}
+
+2：@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			String message = "message is "+new Date();
+			amqpTemplate.convertAndSend("exchange","topic.message",message);
+			return message;
+		}
+		
+		@RequestMapping("/send2")
+		public String send2() {
+			String message = "message2 is "+new Date();
+			amqpTemplate.convertAndSend("exchange","topic.messages",message);
+			return message;
+		}
+	}
+
+3：@Component
+@RabbitListener(queues="topic.message")
+public class Reveice {
+	@RabbitHandler
+	public void receive(String msg) {
+		System.out.println("server 1 您有新的短消息"+msg);
+	}
+}
+
+
+4：@Component
+@RabbitListener(queues="topic.messages")
+public class Reveice2 {
+	@RabbitHandler
+	public void receive(String msg) {
+		System.out.println("server 2 您有新的短消息"+msg);
+	}
+}
+
+Topic Exchange 转发消息主要是根据通配符，队列topic.message只能匹配topic.message的路由。而topic.messages匹配路由规则是topic.#，所以它可以匹配topic.开头的全部路由。而topic.#发送的消息也只能是topic.#的接受者才能接收。
+结果：
+	按/send发送请求，则两个消息队列全部命中，发一条消息，会有两个接受者。
+	按/send2发送请求，则只匹配messages的消息队列，只有一个接受者。

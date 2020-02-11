@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+	<style>
+		#d1,#d2 {
+			width: 300px;
+			height: 300px;
+			border: #000 solid 1px;
+		}
+	</style>
+</head>
+<body>
+	<!-- 
+		vue事件中的5种 事件修饰符：
+		1. stop， 	阻值事件冒泡!
+		2. prevent，阻值事件的默认行为。
+		3. once,	添加一次性事件
+		4. self,    只有事件发生在自己身上，才有效果，冒泡的不算！
+		5. capture，在事件从外向内传递时，就直接触发。此时，从内而外冒泡时，就不再触发了!
+	-->
+	<div id="app">
+		<div id="d1" @click="f1">
+			<button type="button" @click="f2">冒泡吧，事件！</button> <br>
+			<button type="button" @click.stop="f2">不冒泡，事件！</button> <br>
+			<a href="http://www.baidu.com" @click.prevent.stop>百度一下，你就知道</a> <br>
+			<button type="button" @click.once="f3">一次性，事件！</button>			
+		</div>
+
+		<div id="d2" @click.capture="f1">
+			<button type="button" @click="f2">呵呵</button>
+		</div>
+	</div>	
+	<script>
+
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg:"aaa"
+			},
+			methods: {
+				f1() {
+					console.log("f1");
+				},
+				f2() {
+					console.log("f2");
+				},
+				f3() {
+					console.log("f3");
+				}
+			}
+		});
+	</script>
+</body>
+</html>

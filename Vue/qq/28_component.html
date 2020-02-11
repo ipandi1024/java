@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!-- 
+			如果子组件非要使用父组件的data并不是不可能！ 那就按以下步骤来
+			
+			使用Vue为我们预留的component元素，搭配:is属性，既可使用组件, 
+			由此，便有了组件切换的第二种方式 ，这种方式适合于超过2个的组件的切换。
+			
+		-->	
+		<div id="app">
+			<!--  1. 为子组件绑定一个自定义属性，且把父组件的属性绑定到这个子组件的自定义属性上  -->
+			<abc :parentmsg="msg"></abc>
+		</div>
+		
+		<template id="abc">
+			<div>
+				<!--3. 这样，在子组件的模板中，就可以使用自定义属性了，这个自定义属性的值就是父组件的属性传来的值-->
+				hahahahaahahahahahah {{parentmsg}}   {{aa}}
+			</div>
+		</template>
+		
+		<script>
+		
+			var app = new Vue({
+				el:"#app",
+				data: {
+					msg:"父组件的属性！！！"
+				},
+				methods:{
+				},
+				components: {
+					"abc": {
+						// 2. 在组件对象中，添加一个props属性，该属性的值是一个数组，数组元素的值恰恰就是子组件自定义属性的名字
+						props:['parentmsg'],
+						template:"#abc",
+						data() {
+							return {
+								aa:12
+							}
+						}
+					},
+					
+				}
+			});
+		</script>
+	</body>
+</html>

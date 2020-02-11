@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!-- 组件也可以有自己的方法 -->
+		<div id="app">
+			<aa></aa>
+		</div>
+		
+		<template id="t1">
+			<div>
+				{{msg}} <br>
+				<button type="button" @click="f1">GO</button>
+			</div>
+		</template>
+		
+		<script>
+			var app = new Vue({
+				el:"#app",
+				data: {
+				},
+				components: {
+					"aa": {
+						template:"#t1",
+						data() {
+							return {
+								msg:"麻辣烫里烫辣麻"
+							};
+						},
+						methods: {
+							f1() {
+								// 在子组件的函数中,this代表的是子组件本身,不再是外面的Vue实例了!
+								this.msg = "画上荷花和尚画";
+								console.log("f1...");
+							}
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

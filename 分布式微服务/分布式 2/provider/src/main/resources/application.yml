@@ -1,0 +1,20 @@
+server:
+    port: 9002
+
+spring:
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ybls?characterEncoding=UTF-8
+        username: root
+        password: ilovelaohan
+    application:
+        name: provider  #在cloud中每个项目都必须给name  name不要太长  jiapei_team2_sales_provider
+eureka:
+    client:
+        service-url:
+            defaultZone:
+                http://localhost:9999/eureka/ #Eureka的服务器的地址
+        register-with-eureka: true
+        fetch-registry: true
+    instance:
+        prefer-ip-address: true

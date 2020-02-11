@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: eureka
+  security:
+    user:
+      name: admin
+      password: ilovelaohan
+
+#给当前配置文件设置三个主配置描述
+#STEP1： 更改hosts文件  han1 han2 han3  ==========>127.0.0.1
+#  C:\Windows\System32\drivers\etc  127.0.0.1 han1 han2 han3
+#  通过ping来验证设置是否正常
+
+---
+spring:
+  profiles:  #当前的配置文件的名称
+    han1  #如果以Han1的配置文件运行  那个当前的主机名称就是han1
+server:
+  port: 9997
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:ilovelaohan@han2:9998/eureka/,http://admin:ilovelaohan@han3:9999/eureka/
+  instance:
+    hostname: han1  #当前主机的名称就是han1
+    prefer-ip-address: true
+
+---
+spring:
+  profiles:  #当前的配置文件的名称
+    han2  #如果以Han1的配置文件运行  那个当前的主机名称就是han1
+server:
+  port: 9998
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:ilovelaohan@han1:9997/eureka/,http://admin:ilovelaohan@han3:9999/eureka/
+  instance:
+    hostname: han2  #当前主机的名称就是han1
+    prefer-ip-address: true
+
+---
+spring:
+  profiles:  #当前的配置文件的名称
+    han3  #如果以Han1的配置文件运行  那个当前的主机名称就是han1
+server:
+  port: 9999
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://admin:ilovelaohan@han1:9997/eureka/,http://admin:ilovelaohan@han2:9998/eureka/
+  instance:
+    hostname: han3  #当前主机的名称就是han1
+    prefer-ip-address: true

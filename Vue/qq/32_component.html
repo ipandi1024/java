@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!--
+			虽然Vue不提倡我们直接操作DOM，但是这并不代表不能在Vue中操作DOM
+			毕竟Vue的基础也是js！！！
+			
+			既然Vue不提倡我们直接操作DOM，那么当我们非要操作DOM的时候，咋办？？
+			Vue提供了一个自己封装的操作DOM的api
+			1. 先在DOM元素上，添加一个ref属性， 这个ref属性就是写给Vue
+			2. 在Vue实例的函数中，可以使用 this.$refs.dd来访问Dom元素
+		-->
+		<div id="app">
+			<div ref="dd" id="d1" @click="f1">飞雪连天射白鹿</div>
+			<div ref="dd2" id="d1" @click="f1">飞雪连天射白鹿</div>
+			<div ref="dd3" id="d1" @click="f1">飞雪连天射白鹿</div>
+		</div>
+		<script>
+			var app = new Vue({
+				el:"#app",
+				data: {
+				},
+				methods:{
+					f1() {
+						// $("#d1").html("呵呵哒");
+						this.$refs.dd.innerHTML = '乔达摩 悉达多';
+						this.$refs.dd2.innerHTML = '鸠摩罗什';
+						this.$refs.dd3.innerHTML = '玄奘';
+					}
+				},
+				components: {
+				}
+			});
+		</script>
+	</body>
+</html>

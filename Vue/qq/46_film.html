@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+		<style>
+			.has {
+				background-color: #00b9f1;
+			}
+			.no {
+				background-color: #CCC;
+			}
+			td {
+				border: #000 solid 1px;
+				width: 40px;
+				height: 40px;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id="app">
+			<table >
+				<tr v-for="(row,i) in seats">
+					<td v-for="(col,j) in row" :class="[seats[i][j] == 1 ? 'has':'no']" @click="toggle(i,j)">
+						&nbsp;
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<script>
+			var app = new Vue({
+				el: "#app",
+				data: {
+					// 0 表示空位置， 1表示有人
+					seats: [
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0]
+					]
+				},
+				methods: {
+					toggle(i,j) {
+						this.seats[i][j] = -this.seats[i][j]+1;
+						var copy = this.seats.slice(0);
+						this.seats = copy;
+						
+					}
+				}
+			});
+		</script>
+		
+	</body>
+</html>

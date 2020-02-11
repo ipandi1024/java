@@ -1,0 +1,52 @@
+spring boot 发送mq:
+
+1:pom.xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+2:在application.properties添加rabbitmq的相关信息：
+	spring.application.name=boot-rabbitmq
+	spring.rabbitmq.host=127.0.0.1
+	spring.rabbitmq.port=5672
+	spring.rabbitmq.username=guest
+	spring.rabbitmq.password=guest
+
+3:配置队列：
+	@Configuration
+	public class RabbitMqConfig {
+		@Bean
+		@ConditionalOnMissingBean(name="queue")//可选
+		public Queue getQueue() {
+			return new Queue("laohanqueue");
+		}
+	}
+
+4、发送者通过Controller类发送消息：
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			String message = "message is "+new Date();
+			amqpTemplate.convertAndSend("laohanqueue",message);
+			return message;
+		}
+	}
+
+5: 接受消息：
+	@Component
+	@RabbitListener(queues="laohanqueue")
+	public class Reveice {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("您有新的短消息"+msg);
+		}
+	}
+
+注意，发送者和接收者的queue name必须一致，不然不能接收
+
+	

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!--
+			我们已经知道，使用<router-link>可以切换路由！！
+			
+			我们也可以不适用这个标记，而是使用Vue代码来切换路由！
+		 -->
+		<div id="app">
+			<button @click="f1">login</button>
+			<button @click="f2">reg</button>
+			<router-view></router-view>
+		</div>
+		
+		<template id="login">
+			<div>
+				登录界面 <br>
+				username: <input type="text"> <br>
+				password: <input type="text"> <br>
+				<button type="button" @click="f1">登录</button>
+			</div>
+		</template>
+		
+		<template id="reg">
+			<div>
+				注册界面 <br>
+				username: <input type="text"> <br>
+				password: <input type="text"> <br>
+				<button type="button">注册</button>
+			</div>
+		</template>
+		
+		<script>
+			
+			var login = {
+				template: "#login",
+				methods: {
+					f1() {
+						console.log(this.$route.params.id);
+						console.log(this.$route.params.name);
+					}
+				}
+			};
+			
+			var reg = {
+				template: "#reg"
+			};
+			
+			
+			var router = new VueRouter({
+				routes: [
+					{path:"/login/:id/:name", component:login},
+					{path:"/reg", component:reg},
+				]
+			});
+			
+			var app = new Vue({
+				el:"#app",
+				data: {
+					id: 100,
+					name: "eason"
+				},
+				methods: {
+					f1() {
+						// 使用Vue代码实现路由切换
+						// 此时this.$router, 后面就是有"r"!!(对比,在获取给路由传递的参数时,才使用this.$route)
+						this.$router.push("/login/"+this.id + "/" + this.name);
+						// this.$router.replace("/login/"+this.id + "/" + this.name);
+					},
+					f2() {
+						this.$router.push("/reg");
+					}
+				},
+				router
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+server:
+  port: 9999
+
+#给当前这个服务的实例提供一个名称
+spring:
+  application:
+    name: eureka
+
+eureka:
+  client:
+    register-with-eureka: false  #是否把自己注册到eureka 因为本身就是eureka 而且因为只有一个eureka所以是false
+    fetch-registry: false  #是否从eureka上检索服务和API列表
+    service-url:
+      defaultZone: http://localhost:9999/eureka/  #当前eureka服务的实例的地址
+  instance:
+    prefer-ip-address: true #是否允许以ip进行注册

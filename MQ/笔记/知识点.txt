@@ -1,0 +1,11 @@
+TTL&消息长度&拒绝MAIN：
+死信MAIN:
+RabbitMQ事务和Confirm发送方消息确认MAIN:
+
+BOOT操作MQ整合。
+	RabbitMQ 消息发送、消息监听
+
+消息补偿BOOT：
+幂等性BOOT：
+	
+异常处理

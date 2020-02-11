@@ -1,0 +1,54 @@
+1：config声明2个消息队列
+	@Configuration
+	public class RabbitMqConfig {
+		@Bean
+		public Queue getQueue() {
+			return new Queue("laohanqueue");
+		}
+		
+		@Bean
+		public Queue getQueue2() {
+			return new Queue("laohanqueue2");
+		}
+	}
+
+2：两个发送者
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			String message = "message is "+new Date();
+			amqpTemplate.convertAndSend("laohanqueue",message);
+			return message;
+		}
+		
+		@RequestMapping("/send2")
+		public String send2() {
+			String message = "message2 is "+new Date();
+			amqpTemplate.convertAndSend("laohanqueue2",message);
+			return message;
+		}
+	}
+
+3：两个接受者
+	@Component
+	@RabbitListener(queues="laohanqueue")
+	public class Reveice {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("server 1 您有新的短消息"+msg);
+		}
+	}
+
+	@Component
+	@RabbitListener(queues="laohanqueue2")
+	public class Reveice2 {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("server 2 您有新的短消息"+msg);
+		}
+	}
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+			<!-- 私有组件如何定义 -->
+			<div id="app">
+				<c1></c1>
+				<c2></c2>
+			</div>
+			
+			<template id="t1">
+				<div>
+					东方不败！！
+				</div>
+			</template>
+			
+			<template id="t2">
+				<div>
+					天下大事必作于细
+				</div>
+			</template>
+			
+			<script>
+				
+				var app = new Vue({
+					el:"#app",
+					data: {
+					},
+					components: {
+						"c1":  {
+							template:"#t1",
+						},
+						"c2": {
+							template:"#t2"
+						}
+					}
+				});
+			</script>
+	</body>
+</html>

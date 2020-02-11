@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+</head>
+<body>
+<div id="app">
+<INPUT TYPE="text" NAME="zm" @keyup="show($event)" v-model="zm" id="zm">
+    <TABLE border="0" width="150">
+        <TR v-for="item in columns">
+            <TD><a href="" @click.prevent="fill(item.zname)">{{item.zname}}</a></TD>
+        </TR>
+    </TABLE>
+
+</div>
+</body>
+</html>
+
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data:{
+            zm:'',
+            columns:''
+        },
+        methods:{
+            show(event){
+                console.log(event)
+                if(this.zm!=""&&this.zm!=null)
+                {
+                    this.$http.get('findZm?zm='+this.zm).then(function(res){
+                        this.columns=res.body;
+                        if(this.columns!=null&&this.columns!=''&&this.columns.length==1&&event.key!='Backspace'){
+                            this.zm = this.columns[0].zname;
+                            this.columns='';
+                        }
+                    })
+                }
+            },fill(value){
+                this.zm = value;
+                this.columns='';
+            }
+        }
+    })
+</script>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+		<!-- 只要把vue-router.js引入到页面中，在浏览器的内存中，就多了一个VueRouter构造函数 -->
+		<script src="https://cdn.bootcss.com/vue-router/3.1.3/vue-router.min.js"></script>
+	</head>
+	<body>
+		<!--
+			提到路由，就只有一个意思：选择。
+			
+			Vue中的路由器是概念上的路由！！ 也具备选择的功能。
+			Vue中的路由恰恰是在多个组件之间选择一个来显示！
+		-->
+		<div id="app">
+			<!-- router-view元素，就是一个占位符，专门用来显示组件内容的！ -->
+			<a href="#/login">去登录</a>
+			<a href="#/bb">去注册</a>
+			<router-view></router-view>
+		</div>
+			
+		<template id="loginComponent">
+			<div>
+				登录界面
+			</div>
+		</template>
+		
+		<template id="registerComponent">
+			<div>
+				注册界面
+			</div>
+		</template>
+		
+		<script>
+			
+			// 定义登录组件
+			var loginComponent = {
+				template:"#loginComponent"
+			};
+			
+			// 定义注册组件
+			var registerComponent = {
+				template:"#registerComponent"
+			}
+			
+			// 定义路由
+			var router = new VueRouter({
+				// 在路由对象中,要定义出,路径与组件的映射关系.
+				// 注意,路由的路径,必须以“/”开头!
+				routes: [
+					// 以下只有/的路径,表示一进入页面就显示对应组件!!
+					{path:"/", component:loginComponent},
+					{path:"/login", component:loginComponent},
+					{path:"/bb", component:registerComponent}
+				]
+			});
+			
+			
+			// 注意,在使用路由功能时,Vue实例中就不能再定义私有组件了!!
+			var app = new Vue({
+				el:"#app",
+				data: {
+				},
+				// 一旦我们把一个路由对象,添加到Vue实例中,则url上会自动加上# 
+				"router":router
+			});
+		</script>
+		
+		<marquee behavior="" direction="">i can fly!</marquee>
+	</body>
+</html>

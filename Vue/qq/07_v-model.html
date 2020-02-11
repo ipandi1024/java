@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		{{msg}}
+
+		<!-- 双向绑定，只能用于表单元素，因为只有表单元素，才能接受用户输入！！ -->
+		<input type="text" v-model="msg" />
+	</div>	
+	<script>
+
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg: "独孤九剑！！！~",
+			},
+			methods: {
+			
+			}
+		});
+	</script>
+</body>
+</html>

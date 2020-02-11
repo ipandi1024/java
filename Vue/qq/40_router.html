@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		
+		<div id="app">
+			<router-link to="user">用户管理</router-link>
+			<router-link to="product">商品管理</router-link>
+			<router-view></router-view>
+		</div>
+		
+		<template id="user">
+			<div>
+				用户管理界面
+			</div>
+		</template>
+		
+		<template id="product">
+			<div>
+				商品管理界面<br>
+				<ul>
+					<li><router-link to="/product/addproduct">添加商品</router-link></li>
+					<li><router-link to="/product/findproduct">查看商品</router-link></li>
+				</ul>
+				<router-view></router-view>
+			</div>
+		</template>
+		
+		
+		<template id="addproduct">
+			<div>
+				添加商品界面
+			</div>
+		</template>
+		
+		<template id="findproduct">
+			<div>
+				查看商品界面
+			</div>
+		</template>
+		
+		<script>
+			
+			var user = {
+				template: "#user"
+			};
+			
+			var product = {
+				template: "#product"
+			};
+			
+			var addproduct = {
+				template:"#addproduct"
+			};
+			
+			var findproduct = {
+				template:"#findproduct"
+			};
+			
+			var router = new VueRouter({
+				routes:[
+					{path:"/", component:user},
+					{path:"/user", component:user},
+					{
+						path:"/product", component:product,
+						children:[
+							{path:"/product/addproduct", component:addproduct},
+							{path:"/product/findproduct", component:findproduct}
+						]
+					},
+					
+				]
+			});
+			
+			var app = new Vue({
+				el:"#app",
+				methods: {
+				},
+				router
+			});
+		</script>
+	</body>
+</html>

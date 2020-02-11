@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+	<style>
+		div {width: 300px; height: 200px;}
+		.aa {border: #000 solid 5px;}
+		.bb {background-color: lightblue}
+		.cc {color: #8ab42e;}
+	</style>
+</head>
+<body>
+	<div id="app">
+
+		<button type="button" @click="flag=false">点点</button>
+
+		<div class="aa bb cc">
+			任贤齐
+		</div>
+
+		<!-- 
+			我们知道，标记自带的class属性，属性值都是字符串类型，可以直接写出样式的名字
+
+			一旦有某个Vue对象，绑定了class属性，就像这样： ":class" 或者 "v-bind:class"
+			被绑定的class属性，直接写出的内容，就会被当做是vue对象的属性名
+			被绑定的class属性，如果想表示某一个字符串本身，切记加上引号
+
+		-->
+		<div :class="[flag ? 'aa' : 'bb']">
+			周华健
+		</div>
+
+		<div :class="[{'aa':flag}, {'bb':flag}, {'cc':flag}]">
+			蔡旭坤娘娘
+		</div>
+
+		<!-- 可以看出，使用vue管理class的好处是，可以在:class中写出表达式 -->
+	</div>	
+
+
+	<script>
+		var app = new Vue({
+			el:"#app",
+			data: {
+				flag:true
+			}
+		});
+	</script>
+</body>
+</html>

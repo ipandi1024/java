@@ -1,0 +1,194 @@
+main方法没有默认的消息补偿
+	在消费者消费产生异常的时候，消息会重新进入消息队列，等待新的消费者。
+
+Rabbitmq 默认情况下 如果消费者程序出现异常情况 会自动实现补偿机制  也就是 重试机制：
+
+==========================
+建立Boot测试环境：
+1：yml
+	server:
+	    port: 8000
+
+	spring:
+	  rabbitmq:
+	    host: 127.0.0.1
+	    port: 5672
+	    username: guest
+	    password: guest
+
+2:pom.xml
+	<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+3:@Configuration
+public class RabbitMqConfig {
+    @Bean
+    public Queue getQueue() {
+        return new Queue("laohanqueue");
+    }
+}
+
+4:@Resource
+    private AmqpTemplate amqpTemplate;
+
+    @RequestMapping("/send")
+    public String send() {
+        String message = "message is "+new Date();
+        amqpTemplate.convertAndSend("laohanqueue",message);
+        return message;
+    }
+
+5:@Component
+@RabbitListener(queues="laohanqueue")
+public class Reveice {
+    @RabbitHandler
+    public void receive(String msg) {
+        System.out.println("您有新的短消息"+msg);
+        int i  = 9/0;
+    }
+}
+
+==========================
+测试结果：
+	当生产者投递消息后：
+
+	消费者会不停的进行打印:   消息一直没有被消费
+
+原因 Rabbitmq 默认情况下 如果消费者程序出现异常情况 会自动实现补偿机制  也就是 重试机制
+
+
+@RabbitListener底层使用AOP进行拦截，如果程序没有抛出异常，自动提交事务。 
+如果Aop使用异常通知 拦截获取异常信息的话 ， 
+自动实现补偿机制，该消息会一直缓存在Rabbitmq服务器端进行重放，一直重试到不抛出异常为准。
+
+
+可以修改重试策略
+
+ 一般来说默认5s重试一次，
+
+消费者配置：
+	spring:
+	  rabbitmq:
+	    host: 127.0.0.1
+	    port: 5672
+	    username: guest
+	    password: guest
+	    listener:
+	      simple:
+		retry:
+		  ####开启消费者重试
+		  enabled: true
+		  ####最大重试次数（默认无数次）
+		  max-attempts: 5
+		  ####重试间隔次数
+		  initial-interval: 3000ms
+
+重试机制都是间隔性的  每次都是一个线程  单线程重试
+
+效果： 重试5次 不行就放弃了。
+
+
+3 设置死信队列
+为了避免消息异常造成的死循环，也可以将requeue（上文配置参数）设置为false，在消息处理失败之后，不会重回队列。
+设置死信队列的交换机可路由key。在消息处理失败的情况下会重回队列，我们可以监听死信队列来做异常处理。
+
+
+
+=================================================================
+消费者如果保证消息幂等性，不被重复消费
+
+消息幂等性，其实就是保证同一个消息不被消费者重复消费两次。
+当消费者消费完消息之后，通常会发送一个ack应答确认信息给生产者，
+但是这中间有可能因为网络中断等原因，导致生产者未能收到确认消息，
+由此这条消息将会被 重复发送给其他消费者进行消费，
+实际上这条消息已经被消费过了
+
+解决办法:
+
+消费者端实现幂等性，意味着我们的消息永远不会消费多次，即使我们收到了多条一样的消息。通常有两种方式来避免消费重复消费：
+
+消息全局ID或者写个唯一标识(如时间戳、UUID等) ：每次消费消息之前根据消息id去判断该消息是否已消费过，如果已经消费过，则不处理这条消息，否则正常消费消息，并且进行入库操作。(消息全局ID作为数据库表的主键，防止重复)
+利用Redis的setnx 命令：给消息分配一个全局ID，只要消费过该消息，将 < id,message>以K-V键值对形式写入redis，消费者开始消费前，先去redis中查询有没消费记录即可。
+
+代码如下：
+=================================================================
+1：pom.xml
+	  <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+	<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+2:application.yml
+	spring:
+	  rabbitmq:
+	    host: 127.0.0.1
+	    port: 5672
+	    username: guest
+	    password: guest
+	    listener:
+	      simple:
+		retry:
+		  ####开启消费者重试
+		  enabled: true
+		  ####最大重试次数（默认无数次）
+		  max-attempts: 5
+		  ####重试间隔次数
+		  initial-interval: 3000ms
+
+3:@Configuration
+public class RabbitMqConfig {
+    @Bean
+    public Queue getQueue() {
+        return new Queue("laohanqueue");
+    }
+}
+
+4: @Resource
+    private AmqpTemplate amqpTemplate;
+    
+    @RequestMapping("/send")
+    public String send() {
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setMessageId(UUID.randomUUID().toString());
+        messageProperties.setContentType("text/plain");
+        messageProperties.setContentEncoding("utf-8");
+        Message message = new Message("hello,woniu!".getBytes(), messageProperties);
+
+        amqpTemplate.convertAndSend("laohanqueue",message);
+        return "ok";
+    }
+
+5:@Component
+@RabbitListener(queues="laohanqueue")
+public class Reveice {
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @RabbitHandler
+    public void receive(String value,Message message, Channel channel) throws Exception {
+        System.out.println("=====>"+value+" "+message);
+        String messageid = message.getMessageProperties().getMessageId();
+        String msg = new String(message.getBody(), "UTF-8"); //消息内容获取之
+        System.out.println("您有新的短消息"+msg+"   "+messageid);
+        if(messageid==null||redisTemplate.opsForValue().get(messageid)!=null){
+            System.out.println("已经消费过了，不要重复进行消费");
+            return;
+        }else{
+            System.out.println("处理完业务数据");
+            redisTemplate.opsForValue().set(messageid, "ok");
+        }
+        int i  = 9/0;
+    }
+}
+
+则即便发生网络故障，即便强制报错，则改消息也只会被处理1次，而且消息补偿也只有一次，不会造成
+5次消息补偿。
+
+
+

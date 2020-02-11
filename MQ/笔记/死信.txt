@@ -1,0 +1,101 @@
+DLX Dead-Letter-Exchange 死信交换器
+当消息在一个队列中编程死信之后，它能被重新被发送到另一个交换器中，这个
+交换器就是DLX,绑定DLX的队列就是死信队列。
+
+消息变成死信一般是由于一下几种情况：
+
+1：消息被拒绝 Basic.Reject/Basic.Nack 并且设置requeue参数为false
+2: 消息过期
+3：队列达到最大长度
+
+DLX也是一个正常的交换器，和一般的交换器没有区别，它能在任何的队列上被指定，实际上
+就是设置某个队列的属性。当这个队列中存在死信时，RabbitMQ就会自动地将这个消息重新发布
+到设置的DLX上去，进而被路由到另一个队列，即死信队列。
+
+通过在channel.queueDeclare方法中设置x-dead-letter-exchange参数来为这个队列添加DLX.
+
+
+死信代码：
+
+消息的生产者：
+=====================================================
+public static void main(String[] args) throws Exception {
+        Connection connection = ConnectionUtil.getConnection();
+
+        // 3. 创建channel
+        Channel channel = connection.createChannel();
+
+        channel.exchangeDeclare("exchange.dlx", "direct",true);//死信交换机
+        channel.exchangeDeclare("exchange.normal", "fanout",true);//普通交换机
+        
+        Map map = new HashMap();
+//        map.put("x-message-ttl", 10000);
+        map.put("x-max-length",20);
+        map.put("x-dead-letter-exchange", "exchange.dlx");
+        map.put("x-dead-letter-routing-key", "routingkey");
+        
+        //声明队列
+        channel.queueDeclare("queue.normal",true,false,false,map);
+        channel.queueBind("queue.normal", "exchange.normal", "");
+        
+        channel.queueDeclare("queue.dlx",true,false,false,null);
+        channel.queueBind("queue.dlx", "exchange.dlx", "routingkey");
+        
+        for (int i = 0; i < 100; i++) {
+        	String msg = "how are you"+i;
+            channel.basicPublish("exchange.normal", "rk", null, msg.getBytes());
+		}
+      
+        // 关闭连接
+        channel.close();
+        connection.close();
+
+    }
+=====================================================
+普通消息接收
+public static void main(String[] args) throws Exception {
+	   Connection connection = ConnectionUtil.getConnection();
+
+	   Channel channel = connection.createChannel();
+
+	   channel.queueBind("queue.normal", "exchange.normal", "");
+
+	   
+	   DefaultConsumer consume = new DefaultConsumer(channel) {
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+					byte[] body) throws IOException {
+				String msg = new String(body, "UTF-8");
+				System.out.println("接受到普通消息" + msg);
+				channel.basicAck(envelope.getDeliveryTag(), false);
+			}
+		};
+
+	   channel.basicConsume("queue.normal", false, consume);
+}
+=====================================================
+死信接收
+public static void main(String[] args) throws Exception {
+        Connection connection = ConnectionUtil.getConnection();
+
+        Channel channel = connection.createChannel();
+
+        channel.queueDeclare("queue.dlx", true, false, false, null);
+        channel.queueBind("queue.dlx", "exchange.dlx", "routingkey");
+
+    
+        DefaultConsumer consume = new DefaultConsumer(channel) {
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+					byte[] body) throws IOException {
+				String msg = new String(body, "UTF-8");
+				System.out.println("接受到死信" + msg);
+				channel.basicAck(envelope.getDeliveryTag(), false);
+			}
+		};
+
+	channel.basicConsume("queue.dlx", false, consume);
+
+}
+=====================================================
+=====================================================
+=====================================================
+

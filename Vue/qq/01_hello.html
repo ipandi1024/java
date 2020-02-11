@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="bundle.js"></script>
+	<!-- 在页面上，引入了vue.js以后，在浏览器内存中，就会多一个构造器函数：Vue -->
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+
+	<h3>01_hello.html</h3>
+
+	<div id="app">
+		问候Vue它大爷！！！<br>
+		{{msg}} <br>
+		{{msg2}} <br>
+		{{1 + 1}} <br>
+		{{ msg + " " + Date.now() }} <br>
+	</div>
+
+	
+
+	<script>
+		// 我们使用Vue构造函数，来创建按一个Vue对象
+		var app = new Vue({
+			// 每一个vue对象，要通过el来绑定一个dom元素，此为单向绑定。
+			el:"#app",
+			// 我们通过data来定义当前vue对象的属性
+			// 只有与此vue对象绑定的dom元素，才可以访问当前vue对象的属性, 语法是: {{属性名}}
+			data: {
+				msg:"飞雪连天射白鹿",
+				msg2:"笑书神侠倚碧鸳"
+			}
+		});
+
+		/*像这样，DOM元素，能访问与它绑定的vue对象的属性，这个现象，称之为： 单向绑定 */		
+
+
+	</script>
+	
+</body>
+</html>

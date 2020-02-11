@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="bundle.js"></script>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		{{msg}} <br>
+		{{new Date()|foo}} <br>
+		{{new Date(0)|foo}} <br>
+		{{new Date(1999,3,4)|foo}}
+	</div>	
+	
+	<div id="app2">
+		{{msg}} <br>
+		{{new Date() |foo}} <br>
+	</div>
+	<script>
+		// 定义全局过滤器, 可以使用在同一个页面中的多个不同的Vue实例中!
+		Vue.filter("foo", function(x) {
+			return x.getFullYear() + "-" + (x.getMonth()+1) + "-" + x.getDate();
+		});
+		
+		
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg: "哇哈哈哈!"
+			}
+		});
+		
+		var app2 = new Vue({
+			el:"#app2",
+			data: {
+				msg: "嘻嘻嘻嘻!"
+			}
+		});
+	</script>
+</body>
+</html>

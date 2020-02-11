@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="bundle.js"></script>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		{{msg|foo}} <br>
+	</div>	
+	
+	<div id="app2">
+		{{msg|foo}} <br>
+	</div>
+	<script>
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg: "哇哈哈哈!"
+			},
+			/*你懂得*/
+			filters: {
+				foo(x) {
+					return x + "~~~~~###";
+				}
+			}
+		});
+		
+		var app2 = new Vue({
+			el:"#app2",
+			data: {
+				msg: "嘻嘻嘻嘻!"
+			}
+		});
+	</script>
+</body>
+</html>

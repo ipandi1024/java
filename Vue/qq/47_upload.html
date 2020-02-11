@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		
+		<form>
+			name: <input id="name" type="text" > <br>
+			photo: <input id="ff"  type="file" name="photo"> <br>
+			<button type="button">上传</button>
+		</form>
+		
+		<script>
+			$("button:eq(0)").click(()=> {
+				
+				// 模拟表单数据
+				var formData = new FormData();
+				var ff = document.getElementById("ff");
+				formData.append("photo", ff.files[0]);
+				
+				var name = document.getElementById("name");
+				formData.append("name", name.value);
+				
+				axios.post("/users/upload", formData);
+				
+			});
+		</script>
+		
+	</body>
+</html>

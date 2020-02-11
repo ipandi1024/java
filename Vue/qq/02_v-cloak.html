@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div id="app" v-cloak>
+		
+		<p>+++ {{msg}} ---</p>
+
+		<!-- v-text会使用指定的vue对的属性，把标记内容覆盖 -->
+		<p v-text="msg">+++ ---</p>
+
+		<!-- v-html也会使用指定的vue对的属性，把标记内容覆盖，但是它还会解释标记！ -->
+		<p v-html="msg">+++ ---</p>
+
+	</div>
+
+	<script>
+		window.onload = function() {
+			var app = new Vue({
+				el:"#app",
+				data: {
+					msg: "<marquee>好好学习，天天向上，别浪！</marquee>"
+				}
+			});
+		}
+	</script>
+
+	<!-- 故意把引入vue的代码写在下方，是为了暴露”闪烁问题“ -->
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+	
+</body>
+</html>

@@ -1,0 +1,41 @@
+RabbitMQ之消息确认回执和拒绝
+
+rabbitmq提供了一个消息确认（message acknowledgements） 的概念：当一个消息从队列中投递给消费者（consumer）后，消费者会通知一下消息中间件（rabbitmq），这个可以是系统自动autoACK的也可以由处理消息的应用操作。
+
+当 “消息确认” 被启用的时候，rabbitmq不会完全将消息从队列中删除，直到它收到来自消费者的确认回执（acknowledgement）。
+
+为了解决这个问题，rabbitmq提供了2种处理模式来解决这个问题：
+
+自动确认模式（automatic acknowledgement model）：当RabbbitMQ将消息发送给应用后，消费者端自动回送一个确认消息。（使用AMQP方法：basic.deliver或basic.get-ok）。
+
+显式确认模式（explicit acknowledgement model）：RabbbitMQ不会完全将消息从队列中删除，直到消费者发送一个确认回执（acknowledgement）后再删除消息。（使用AMQP方法：basic.ack）。
+
+显式确认模式:
+	用显式确认模式，需要指定autoAck = flase
+	在显式确认模式，RabbitMQ不会为未ack的消息设置超时时间，它判断此消息是否需要重新投递给消费者的唯一依据是消费该消息的消费者连接是否已经断开。如果断开连接，RabbitMQ也没有收到ACK，则Rabbit MQ会安排该消息重新进入队列，等待投递给下一个消费者。
+
+
+拒绝消息API:
+    /**
+     * Reject a message. 
+     * @param deliveryTag 发布的每一条消息都会获得一个唯一的deliveryTag，deliveryTag在channel范围内是唯一的
+     * @param requeue 是否重回队列 如果值为true，则重新放入RabbitMQ的发送队列，如果值为false，则通知RabbitMQ销毁这条消息
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicReject(long deliveryTag, boolean requeue) throws IOException;
+    //只能拒绝一条消息
+
+
+    basicNack一次对多条消息进行拒绝
+
+    /**
+     * Reject one or several received messages.
+     * @param deliveryTag 发布的每一条消息都会获得一个唯一的deliveryTag，deliveryTag在channel范围内是唯一的
+     * @param multiple 批量确认标志。如果值为true，则执行批量确认，此deliveryTag之前收到的消息全部进行拒绝; 如果值为false，则只对当前收到的消息进行拒绝
+     * @param requeue 是否重回队列 如果值为true，则重新放入RabbitMQ的发送队列，如果值为false，则通知RabbitMQ销毁这条消息
+     * @throws java.io.IOException if an error is encountered
+     */
+    void basicNack(long deliveryTag, boolean multiple, boolean requeue)
+            throws IOException;
+
+这里我们需要注意一下，如果我们的队列目前只有一个消费者，请注意不要拒绝消息并放回队列导致消息在同一个消费者身上无限循环无法消费的情况发生。	

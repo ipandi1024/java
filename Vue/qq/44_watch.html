@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!--
+			讨论
+				1. 在使用watch的例子中，我们发现，使用keyup事件和watch属性，都能达到相同的效果。
+				2. 但是对于那些在页面上无法显示的，或者无法接收键盘输入的数据，则只能使用watch来监视其变化了！比如，路由地址的变化！
+		-->
+		<div id="app">
+			<router-link to="t1">t1</router-link>
+			<router-link to="t2">t2</router-link>
+			<router-view></router-view>
+		</div>
+		
+		<template id="t1">
+			<div>
+				独孤九剑
+			</div>
+		</template>
+		
+		<template id="t2">
+			<div>
+				葵花宝典
+			</div>
+		</template>
+		
+		
+		<script>
+			var t1 = {
+				template: "#t1"
+			};
+			
+			var t2 = {
+				template: "#t2"
+			};
+			
+			var router = new VueRouter({
+				routes:[
+					{path:"/t1",component:t1},
+					{path:"/t2",component:t2},
+				]
+			});
+			
+			var app = new Vue({
+				el: "#app",
+				router,
+				watch: {
+					"$route.path":function(newVal, oldVal) {
+						if(new Date().getHours() < 12) {
+							if(newVal == '/t1') {
+								this.$router.push("/t3");
+							}
+						}
+					}
+				}
+			});
+		</script>
+		
+	</body>
+</html>

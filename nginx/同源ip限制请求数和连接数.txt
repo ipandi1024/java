@@ -1,0 +1,44 @@
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+ 
+	#每秒中向同一Ip的桶里放10个令牌（漏桶原理）注:准确来说是100毫秒放一个令牌
+	#zone=addr:10m: one的共享内存zone用来存储$binary_remote_addr的请求状态.
+	#供下面的 limit_req one= one 使用。
+    limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+	#共享内存，存放控制连接数的内存。
+    limit_conn_zone $binary_remote_addr zone=addr:10m;
+ 
+ 
+    sendfile        on;
+ 
+ 
+ 
+    keepalive_timeout  65;
+ 
+ 
+    server {
+        listen       80;
+        server_name  localhost;
+ 
+		#初始化桶里的令牌数70个。nodelay：没令牌的情况下连接不延迟等待。直接返加503
+		limit_req zone=one burst=70 nodelay;
+		#相同Ip最多有10个连接
+		limit_conn addr 10;
+		#通过client_body_timeout和client_header_timeout控制请求体或者请求头的超时时间。控制在5s之内
+		client_body_timeout 5s;
+    	client_header_timeout 5s;
+ 
+ 
+       location / {
+            root   html;
+            index  index.html index.htm;
+        }
+ 
+ 
+        
+    }
+ 
+ 
+ 
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+		<script src="node_modules/vue/dist/vue.min.js"></script>
+		<!-- 一旦引入了axios.js， 在浏览器内存中，就多了一个对象： axios -->
+		<script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+		<script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			
+			<form class="form-inline">
+			  <div class="form-group">
+			    <label for="name">name</label>
+			    <input type="text" class="form-control" id="name" v-model="name" >
+			  </div>
+			  <div class="form-group">
+			    <label for="birthday">birthday</label>
+			    <input type="text" class="form-control" id="birthday" v-model="birthday" >
+			  </div>
+			  <div class="form-group">
+			    <label for="money">money</label>
+			    <input type="text" class="form-control" id="money" v-model="money" >
+			  </div>
+			  <button type="button" class="btn btn-default" @click="save">增加用户</button>
+			</form>
+			
+			<table class="table table-hover">
+				<tr>
+					<th>id</th>
+					<th>name</th>
+					<th>birthday</th>
+					<th>money</th>
+					<th>操作</th>
+				</tr>
+				<tr v-for="item in list">
+					<td>{{item.id}}</td>
+					<td>{{item.name}}</td>
+					<td>{{item.birthday|formatDate}}</td>
+					<td>{{item.money}}</td>
+					<td>
+						<a href="#" @click="del(item.id)">删除</a>
+						|
+						<a href="#" @click="updateUI(item)">修改</a>
+					</td>
+				</tr>
+			</table>
+			
+			<div id="updateUI">
+				<form class="form-inline">
+				 <div class="form-group">
+				   <label for="id">id</label>
+				   <input type="text" class="form-control" v-model="id2" >
+				 </div>
+				  <div class="form-group">
+				    <label for="name">name</label>
+				    <input type="text" class="form-control" v-model="name2" >
+				  </div>
+				  <div class="form-group">
+				    <label for="birthday">birthday</label>
+				    <input type="text" class="form-control"  v-model="birthday2" >
+				  </div>
+				  <div class="form-group">
+				    <label for="money">money</label>
+				    <input type="text" class="form-control"  v-model="money2" >
+				  </div>
+				  
+				  <div>
+					  <button type="button" class="btn btn-default" @click="update">修改用户</button>
+				  </div>
+				</form>
+			</div>
+		</div>
+		
+		
+		
+		<script>
+			// axios可以设置地址的前缀:
+			axios.defaults.baseURL = "http://192.168.1.137/";
+			
+			var app = new Vue({
+				el:"#app",
+				data: {
+					layerRef:null,
+					name:'',
+					birthday:'',
+					money:'',
+					id2:'',
+					name2:'',
+					birthday2:'',
+					money2:'',
+					list:null
+				},
+				created() {
+					// created执行时,vue实例的属性和方法,都能任意访问了!!
+					this.findAll();
+					$("#updateUI").hide();
+				},
+				methods:{
+					update() {
+						var self = this;
+						axios.put("/users", {
+							id:this.id2,
+							name:this.name2,
+							birthday:this.birthday2,
+							money:this.money2
+						})
+						.then((response)=> {
+							layer.msg("修改成功");
+							this.findAll();
+							layer.close(self.layerRef);
+							
+						});
+					},
+					findAll() {
+						axios.get("/users")
+							.then((response)=> {   // then函数会在服务器响应成功时执行,status=200
+								this.list = response.data;
+							})  
+							.catch(()=>{  // catch函数会在服务器响应失败时执行,status=500
+								layer.msg("查询失败");
+							});
+					},
+					del(id) {
+						var self = this;
+						
+						layer.confirm('你确定要删除？？', {
+						  btn: ['确认','取消'] //按钮
+						}, function(){
+							axios.delete("/users/"+id)
+							.then(function(response) {
+								layer.msg("删除成功！");
+								self.findAll();
+							}) ;
+						}, function(){
+							// 取消 啥都不干..
+						});
+					},
+					save() {
+						var self = this;
+						axios.post("/users", {
+							name:this.name,
+							birthday:this.birthday,
+							money:this.money
+						})
+						.then(function(response) {
+							layer.msg("增加成功");
+							self.findAll();
+						});
+					},
+					updateUI(item) {
+						
+						this.id2 = item.id;
+						this.name2 = item.name;
+						this.birthday2 = item.birthday;
+						this.money2 = item.money;
+						
+						this.layerRef = layer.open({
+						  type: 1,
+						  skin: 'layui-layer-rim', //加上边框
+						  area: ['420px', '240px'], //宽高
+						  content: $("#updateUI")
+						});
+					}
+					
+				},
+				filters: {
+					formatDate(arg) {
+						var dd = new Date(arg);
+						var y = dd.getFullYear();
+						var m = dd.getMonth() + 1;
+						var d = dd.getDate();
+						return y+"/"+m+"/"+d;
+					}
+				}
+			});
+			
+		</script>
+		
+		
+		
+	</body>
+</html>

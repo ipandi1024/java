@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="bundle.js"></script>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		<button @click="f1">go</button>
+		<button @click="f2">destory</button>
+		{{msg}}
+	</div>	
+	
+	<script>
+		
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg:"令狐冲"
+			},
+			// Vue实例生命周期的8个方法,必须写在与methods, data属性平级的位置,不要写在methods厘米
+			beforeCreate() {   // beforeCreate执行的时候,Vue实例的方法,属性还没有准备好, 所以该方法我们一般不使用!
+				console.log("beforeCreate 访问属性:" + this.msg); 
+				console.log("beforeCreate 访问方法：" + this.show());
+				
+			},
+			created() {			// created执行的时候,Vue实例的方法,属性已经挂载到Vue实例身上了, 
+				console.log("created 访问属性:" + this.msg);
+				console.log("created 访问方法：" + this.show());
+			},
+			beforeMount() {    // beforeMount执行的时候, 内存中的虚拟DOM并没有把页面上的真实DOM替换
+				var app = document.getElementById("app");
+				console.log("beforeMount:" + app.innerHTML);
+			},
+			mounted() {			// mounted执行的时候, 内存中的虚拟DOM已经把页面上的真实DOM替换掉了
+				var app = document.getElementById("app");
+				console.log("mounted:" + app.innerHTML);
+			},
+			beforeUpdate() {	// beforeUpdate执行的时候, vue实例的属性已经变了, 但是虚拟DOM还没有替换真实DOM
+				console.log("beforeUpdate Vue实例的msg:" + this.msg);
+				var app = document.getElementById("app");
+				console.log("beforeUpdate:" + app.innerHTML);
+			},
+			updated() {		// updated执行的时候, vue实例的属性已经变了, 虚拟DOM也替换真实DOM!
+				console.log("updated Vue实例的msg:" + this.msg);
+				var app = document.getElementById("app");
+				console.log("updated:" + app.innerHTML);
+			},
+			beforeDestroy() {  // 了解即可
+				console.log("beforeDestroy: " + this.msg + " " + this.show());
+			},
+			destroyed() {	// 了解即可
+				console.log("destroyed: " + this.msg + " " + this.show());
+			},
+			methods: {
+				show() {
+					return "show....";
+				},
+				f1() {
+					this.msg = Date.now();
+				},
+				f2() {
+					// 每一个Vue实例,除了在methods中添加的方法以外，还都有自带的方法
+					// Vue实例自带的方法前面总是有一个$开头, 
+					// $destroy()一旦执行,Vue实例就会销毁
+					// 销毁以后,vue实例的事件,以及其他全部失效!!
+					// 此时的vue实例就没有作用了!	
+					this.$destroy();
+				}
+			}
+		});
+		
+	</script>
+	
+	
+</body>
+</html>

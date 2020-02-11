@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<!-- 走马灯特效制作 -->
+	<div id="app">
+		<div id="d1">{{msg}}</div>
+		<button type="button" @click="lang()">浪起来~！</button>
+		<button type="button" @click="stop()">别浪，冷静~！</button>
+	</div>	
+	<script>
+
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg: "好好学习，天天向上，别浪~~",
+				intervalId: null
+			},
+			methods: {
+				lang: function() {
+
+					if(this.intervalId != null) {
+						return;
+					}
+
+					// 在vue的对象的函数中，如果要访问vue对象的属性
+					// 则必须在属性前加上this，这个this就表示当前vue对象！
+					 
+					// 该例子的核心点在于：我们只需要修改vue对象的属性
+					// 那么与此vue对象绑定的元素，就会自动获取到变化的属性的值，并且重新渲染界面
+					// 跟不需要程序猿来做DOM操作
+					var self = this;
+
+					this.intervalId = setInterval(function() {
+						self.msg = self.msg.substring(1) + self.msg.substring(0,1);
+					}, 100);
+					
+						
+				},
+				stop: function() {
+					clearInterval(this.intervalId);
+					this.intervalId = null;
+				}
+
+			}
+		});
+	</script>
+</body>
+</html>

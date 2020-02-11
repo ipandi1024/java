@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<!-- 
+		利用v-on来添加事件，则可以调用vue对象内部的函数！！
+	-->
+	<div id="app">
+		<button type="button" v-on:click="f1()">点点</button>
+		<button type="button" @click="f2()">点点2</button>
+	</div>	
+	<script>
+
+		var app = new Vue({
+			el:"#app",
+			data: {
+				msg: "独孤九剑！！！",
+			},
+			methods: {
+				f1: function() {
+					console.log("f11111");
+				},
+				f2: function() {
+					console.log("f22222");
+				}
+			}
+		});
+	</script>
+</body>
+</html>

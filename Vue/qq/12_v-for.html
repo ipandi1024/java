@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		
+		id: <input type="text" v-model="id">
+		name: <input type="text" v-model="name">
+		<button @click="add">add</button>
+		<ul>
+			<li v-for="item in list" :key="item.id">
+				<input type="checkbox"> {{item.id}} -- {{item.name}}
+			</li>
+		</ul>
+
+
+	</div>	
+
+	<script>
+		var app = new Vue({
+			el:"#app",
+			data: {
+				id:'',
+				name:'',
+				list:[
+					{id:10, name:'关羽'},
+					{id:20, name:'张飞'},
+					{id:30, name:'赵云'},
+					{id:40, name:'马超'},
+					{id:50, name:'黄忠'}
+				]
+			},
+			methods: {
+				add() {
+					
+					// this.list.push({id:this.id, name:this.name});
+					this.list.unshift({id:this.id, name:this.name});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

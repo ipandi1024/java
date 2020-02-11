@@ -1,0 +1,42 @@
+1:发送者不变
+	发送者通过Controller类发送消息：
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			String message = "message is "+new Date();
+			amqpTemplate.convertAndSend("laohanqueue",message);
+			return message;
+		}
+	}
+
+2：建立两个接受者
+	@Component
+	@RabbitListener(queues="laohanqueue")
+	public class Reveice {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("您有新的短消息"+msg);
+		}
+	}
+
+	@Component
+	@RabbitListener(queues="laohanqueue")
+	public class Reveice2 {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("server 2 您有新的短消息"+msg);
+		}
+	}
+==========================================
+两个接受者轮训进行接收消息。
+
+server 1 您有新的短消息message is Thu May 30 17:33:29 CST 2019
+server 2 您有新的短消息message is Thu May 30 17:33:33 CST 2019
+server 1 您有新的短消息message is Thu May 30 17:33:36 CST 2019
+server 2 您有新的短消息message is Thu May 30 17:33:42 CST 2019
+server 1 您有新的短消息message is Thu May 30 17:33:43 CST 2019
+server 2 您有新的短消息message is Thu May 30 17:33:43 CST 2019

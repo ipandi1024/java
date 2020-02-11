@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="bundle.js"></script>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		
+		<!-- 在键盘事件之后，可以写出按键对应的数字，此时表示，只有按下了指定的按键才触发事件 -->
+		<input type="text" @keyup.13="f1"><br>
+		
+		<!-- 
+			又因为，每一个按键都对应一个数字，让程序猿去记住这个对应关系，比较不人性化，所以 
+			作者提前封装了一些常用的数字，映射到了单词:
+			
+			.enter	.tab	.delete		.esc	.space	.up		.down	.left	.right
+		-->
+		<input type="text" @keyup.left="f2">
+		
+		<!-- 以下，想制作的效果是，只有按下f2按键时才触发事件 -->
+		<input type="text" @keyup.abcdd="f3">
+		
+	</div>	
+	
+	<script>
+		Vue.config.keyCodes.abcdd=113;
+		
+		var app = new Vue({
+			el:"#app",
+			methods: {
+				f1() {
+					console.log("vue 我来啦！！" + Date.now());
+				},
+				f2() {
+					console.log("vue 我不怕你！" + Date.now());
+				},
+				f3() {
+					console.log("vue 不过如此！" + Date.now());
+				}
+			}
+		});
+		
+		
+	</script>
+</body>
+</html>

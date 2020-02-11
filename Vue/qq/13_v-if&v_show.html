@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="bundle.js"></script>
+	<script src="node_modules/vue/dist/vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		<button type="button" @click="toggle">toggle</button>
+		<!--
+			1. 底层原理
+			v-if，是控制整个元素是否被加入dom中。 如果v-if后面的值为false，则v-if控制的元素根本不会被加入到dom中！
+			v-show，控制的元素，总是在dom结构中， 如果v-show后面的值为false，则v-show控制的元素的display取值为none!
+			
+			2. 性能
+			问题是，到底用谁？？
+			v-if，使用起来代价比v-show更大，毕竟是对dom元素进行添加或删除,v-show仅仅只是修改元素的样式而已。
+			但是v-show的初始渲染代价较高！！当一个元素很少切换时，可以考虑使用v-if， 当元素经常切换时，可以考虑使用v-show.
+		-->
+		<div v-if="flag">
+			哈哈哈
+		</div>
+		<div v-show="flag">
+			呵呵呵
+		</div>
+	</div>	
+	
+	<script>
+		var app = new Vue({
+			el:"#app",
+			data: {
+				flag:true
+			},
+			methods: {
+				toggle() {
+					this.flag = !this.flag;
+				}
+			}
+		});
+	</script>
+</body>
+</html>

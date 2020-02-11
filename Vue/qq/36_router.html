@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+		<style>
+			.foo {
+				background-color: lightpink;
+			}
+		</style>
+	</head>
+	<body>
+		<!--  
+			被选中的a的样式名，其实是可以自己制定的 
+			就是在创建VueRouter对象的时候， 在参数json中，再加一个属性: linkActiveClass
+		-->
+		<div id="app">
+			<router-link to="xx">去登录</router-link>
+			<router-link to="yy">去注册</router-link>
+			
+			
+			<router-view></router-view>
+		</div>
+		
+		<template id="aa">
+			<div>
+				登录界面!!!####
+			</div>
+		</template>
+		
+		<template id="bb">
+			<div>
+				注册界面!!!####
+			</div>
+		</template>
+		
+		<script>
+			// 定义组件
+			var login = {
+				template: "#aa"
+			};
+			var register = {
+				template: "#bb"
+			};
+			
+			// 定义Vue路由
+			var router = new VueRouter({
+				routes: [
+					{path:"/", component:login},
+					{path:"/xx", component:login},
+					{path:"/yy", component:register}
+				],
+				linkActiveClass:'foo'
+			});
+			
+			var app = new Vue({
+				el:"#app",
+				data: {
+					msg:"111"
+				},
+				router
+			});
+		</script>
+	</body>
+</html>

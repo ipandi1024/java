@@ -1,0 +1,223 @@
+一：削峰填谷概念
+
+二：例子
+
+三：直接延时项目，延时高并发条件下，系统的异常。
+
+四：开始MQ
+	Maven项目
+	1:pom.xml
+		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>5.6.0</version>
+		</dependency>
+
+	2: 
+		public static Connection getConnection() throws Exception {
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("localhost");
+			factory.setPort(5672);
+			factory.setUsername("guest");
+			factory.setPassword("guest");
+			Connection conn = factory.newConnection(); 
+			return conn;
+		}
+	3:
+		public class Sender {
+			private static final String QUEUENAME  = "MYQUEUE";
+			public static void main(String[] args) throws Exception {
+				Connection conn = ConnectionUtil.getConnection();
+				
+				Channel channel = conn.createChannel();
+				
+				Map map = new HashMap<String, Object>();
+				map.put("x-max-length", 20);
+				map.put("x-overflow", "reject-publish");
+				
+				channel.queueDeclare(QUEUENAME, false, false, false, map);
+				
+				for (int i = 0; i < 100; i++) {
+					String msg = "hello,huoguo"+i;
+					channel.basicPublish("", QUEUENAME, null, msg.getBytes());
+					System.out.println("发送消息成功"+i);
+				}
+				
+				
+				conn.close();
+			}
+		}
+
+	4:
+		public class Receiver {
+			private static final String QUEUENAME  = "MYQUEUE";
+			
+			public static void main(String[] args) throws Exception {
+				Connection conn = ConnectionUtil.getConnection();
+				
+				Channel channel = conn.createChannel();
+				
+				Map map = new HashMap<String, Object>();
+				map.put("x-max-length", 20);
+				map.put("x-overflow", "reject-publish");
+				
+				channel.queueDeclare(QUEUENAME, false, false, false, map);
+				
+				
+				channel.basicQos(1);
+				
+				DefaultConsumer consume = new DefaultConsumer(channel) {
+					public void handleDelivery(String consumerTag,
+				    Envelope envelope,
+				    AMQP.BasicProperties properties,
+				    byte[] body)
+							throws IOException
+							{
+								String message = new String(body,"UTF-8");
+								try {
+									Thread.sleep(2000);
+									channel.basicAck(envelope.getDeliveryTag(), false);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								System.out.println("接受到消息 "+message);
+							}
+				};
+				
+				channel.basicConsume(QUEUENAME, false, consume);
+				
+			}
+		}
+
+五：MQ改造下单：
+	===============================================================
+1:pom.xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+2:在application.properties添加rabbitmq的相关信息：
+	spring.application.name=boot-rabbitmq
+	spring.rabbitmq.host=127.0.0.1
+	spring.rabbitmq.port=5672
+	spring.rabbitmq.username=guest
+	spring.rabbitmq.password=guest
+
+	spring: 
+	  rabbitmq:
+	    host: 127.0.0.1
+	    port: 5672
+	    username: guest
+	    password: guest  
+
+3:配置队列：
+	@Configuration
+	public class RabbitMqConfig {
+		@Bean
+		@ConditionalOnMissingBean(name="queue")//可选
+		public Queue getQueue() {
+			return new Queue("laohanqueue");
+		}
+	}
+
+
+
+4、发送者通过Controller类发送消息：
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+		
+		@RequestMapping("/send")
+		public String send() {
+			String message = "message is "+new Date();
+			amqpTemplate.convertAndSend("laohanqueue",message);
+			return message;
+		}
+	}
+
+5: 接受消息：
+	@Component
+	@RabbitListener(queues="laohanqueue")
+	public class Reveice {
+		@RabbitHandler
+		public void receive(String msg) {
+			System.out.println("您有新的短消息"+msg);
+		}
+	}
+
+注意，发送者和接收者的queue name必须一致，不然不能接收
+===============================================================
+STEP1.1:simple带ack方式
+
+生产者
+	yml
+	server: 
+	  port: 9000
+	  
+	spring:
+	  rabbitmq:
+	    addresses: localhost
+	    port: 5672
+	    username: guest
+	    password: guest  
+
+	配置队列
+	@Configuration
+	public class MqConfig {
+		@Bean
+		public Queue getQueue() {
+			return new Queue("directhanqueue");
+		}
+	}
+
+	发送消息
+	@RestController
+	public class SendController {
+		@Resource
+		private AmqpTemplate amqpTemplate;
+	
+		
+		@RequestMapping("/send")
+		public String send() {
+			amqpTemplate.convertAndSend("directhanqueue2", "今天天气真正好"+i+"!");
+			return "消息发送成功"+i;
+		}
+	}
+
+消费者：
+	yml
+	server: 
+	  port: 9001
+	  
+	spring:
+	  rabbitmq:
+	    addresses: localhost
+	    port: 5672
+	    username: guest
+	    password: guest  
+	    publisher-returns: true
+	    publisher-confirms: true
+	    listener:
+	      simple:
+		acknowledge-mode: manual
+		prefetch: 1
+	      direct:
+		acknowledge-mode: manual  
+		prefetch: 1 
+
+	@Component
+	@RabbitListener(queues="directhanqueue2")
+	public class Receive {
+		@RabbitHandler
+		public void rev(String msg,Channel channel,Message message) throws IOException, InterruptedException {
+			Thread.sleep(10000);
+			System.out.println("接受到消息1"+msg);
+			channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+		}
+	}
+
+然后完成一个生产者，2个消费者，则产生对等轮询。并且有消息验证。
+===============================================================

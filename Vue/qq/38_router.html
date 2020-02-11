@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<router-link to="/login/2/andy">login</router-link>
+			<router-link to="/reg">reg</router-link>
+			<router-view></router-view>
+		</div>
+		
+		<template id="login">
+			<div>
+				登录界面 <br>
+				username: <input type="text"> <br>
+				password: <input type="text"> <br>
+				<button type="button" @click="f1">登录</button>
+			</div>
+		</template>
+		
+		<template id="reg">
+			<div>
+				注册界面 <br>
+				username: <input type="text"> <br>
+				password: <input type="text"> <br>
+				<button type="button">注册</button>
+			</div>
+		</template>
+		
+		<script>
+			
+			var login = {
+				template: "#login",
+				methods: {
+					f1() {
+						console.log(this.$route.params.id);
+						console.log(this.$route.params.name);
+					}
+				}
+			};
+			
+			var reg = {
+				template: "#reg"
+			};
+			
+			
+			var router = new VueRouter({
+				routes: [
+					{path:"/login/:id/:name", component:login},
+					{path:"/reg", component:reg},
+				]
+			});
+			
+			var app = new Vue({
+				el:"#app",
+				data: {
+				},
+				router
+			});
+		</script>
+	</body>
+</html>

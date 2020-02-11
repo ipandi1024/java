@@ -1,0 +1,6 @@
+server:
+  port: 9001
+
+#用户自定义的变量 自定义的变量在代码中可以通过  ${user.userServicURL} 自动获取属性值
+user:
+  userSericeURL: http://localhost:9000/

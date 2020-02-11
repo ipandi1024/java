@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<!-- 
+			组件中的data
+			像Vue实例可以拥有自己的data一样，Vue组件也可以有自己的data， 每一个Vue组件其实也是一个Vue实例！
+			但是，Vue组件的data属性必须是一个function，否则会报错: [Vue warn]: The "data" option should be a function
+			
+			既然Vue组件的data必须是一个function，那么我们把Vue组件的data定义一个function，
+			但是，该function还必须返回一个对象，否则... : vue.js:634 [Vue warn]: data functions should return an object:
+			
+			
+			注意，此时Vue实例，可以称之为父组件， Vue组件可以称之为子组件
+			父组件和子组件之间不能直接相互访问对方的属性和方法！！
+			（后面的学习中，会讲到如何让父组件和子组件相互访问对方的属性和方法！！）
+		 -->
+		<div id="app">
+			{{msg}} <br>
+			<foo></foo>
+		</div>
+		
+		<template id="t1">
+			<div>
+				{{msg}} <br>
+				既然醒了，那么就学习吧！！ <br>
+				{{msg2|ttt}} <br>
+			</div>
+		</template>
+		
+		<script>
+			var app = new Vue({
+				el:"#app",
+				data: {
+					msg: "天下难事必作于易",
+					abc: "水牛下水，水没水牛腰"
+				},
+				components:{
+					"foo":{
+						template:"#t1",
+						data() {
+							return {
+								msg:"通往黑客的必经之路，是错误铸成的阶梯--高鹏",
+								msg2:"山羊上山，山碰山羊角"
+							};
+						},
+						filters: {
+							ttt(data) {
+								return data+"####";
+							}
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

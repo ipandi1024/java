@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="bundle.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<t1 :kkk="msg"></t1>
+		</div>
+		<template id="t1">
+			<div>
+				hahahaha {{qqq}}  {{kkk}}
+			</div>
+		</template>
+		<script>
+			var app = new Vue({
+				el:"#app",
+				data: {
+					msg: "令狐冲"
+				},
+				components:{
+					"t1": {
+						props:['kkk'],
+						template:"#t1",
+						data() {
+							return {
+								qqq:"qwerty"
+							}
+						}
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
