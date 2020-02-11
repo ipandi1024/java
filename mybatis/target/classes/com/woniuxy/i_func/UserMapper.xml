@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniuxy.i_func.UserMapper">
+	<select id="find" resultType="java.util.Map">
+		select count(*), max(id), min(id) from user
+	</select>
+	
+	<select id="find2" resultType="java.util.Map">
+		SELECT LENGTH(NAME)  长度, COUNT(*) 数量  FROM USER
+		GROUP BY LENGTH(NAME)
+	</select>
+	
+	<select id="find3" resultType="java.util.Map">
+		select * from user
+	</select>
+</mapper>

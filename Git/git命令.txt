@@ -1,0 +1,64 @@
+==========本地分支==============
+git branch
+	查看当前处于哪个分支，会列出所有分支，当前分支前面会标一个*号。
+git branch dev
+	创建一个dev分支
+git checkout dev
+	切换到dev分支
+git checkout -b dev
+	创建dev分支，并切换到dev分支
+
+git merge  ==>   在master分支上合并到dev分支
+	命令用于合并指定分支到当前分支
+git branch -d dev
+	删除dev分支
+git branch -D 分支名  删除一个还没有被合并的分支
+
+=======远程分支========
+关联远程git remote add origin git@github.com:cheney-yuan/supermarket.git
+	 git push -u origin master
+
+git branch 查看本地分支
+git branch -r 查看远程分支
+git branch -a 查看所有分支
+git push  推送到远程主分支
+git push origin dev  把本地分支推送到远程分支
+git checkout -b dev origin/dev    创建本地分支，名字叫dev，且把远程分支origin/dev的内容全部克隆到本地分支dev
+                                                     且切换到本地分支dev
+git push origin --delete dev        删除远程分支
+========================================
+git status
+git add
+git status
+git commit
+git status
+git log -m   ""
+========================操作==========================
+0，首次需要的是克隆远程的master和dev,然后切换到dev。。。。
+     注意：自己也可以合并自己的dev，但是不要push。。。
+1，远程master不要动，我负责合并。。。其实就是，我pull远程的dev下来，然后把我本地的master合并本地的dev，在push
+2，每个人操作的是自己本地的dev
+3，需要push时，先把自己改的代码的加到暂存区，注意不要提交，然后pull一下，保证和远程dev一致，然后再提交并push。
+4，常用命令：
+	克隆远程dev       git checkout -b dev origin/dev            
+	本地dev推送远程dev ： git push origin dev
+	git pull
+
+
+git@github.com:cheney-yuan/supermarket.git 
+            
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+

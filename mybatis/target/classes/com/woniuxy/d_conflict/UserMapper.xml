@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniuxy.d_conflict.UserMapper">
+	<!-- 
+		当模型的属性名，与表中的列名不一致是，解决方法：
+		
+		方法1：
+	 -->
+	<select id="findAll" resultType="User">
+		select 
+			id as id2,
+			name as name2,
+			birthday as birthday2,
+			money as money2
+		from user
+	</select>
+	
+	<!-- 
+		方法2：推荐方式！ 因为这种方式的重用性更高！！
+	 -->
+	 <select id="findAll2" resultMap="rm" >
+		select 
+			*
+		from user
+	</select>
+	<resultMap type="User" id="rm">
+		<id property="id2" column="id"></id>
+		<result property="name2" column="name"/>
+		<result property="birthday2" column="birthday"/>
+		<result property="money2" column="money"/>
+	</resultMap>
+	
+</mapper>

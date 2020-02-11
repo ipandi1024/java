@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniuxy.b_parametertype.UserMapper">
+	<!-- 
+		以下insert语句，确实是需要参数的，是需要写出 parameterType="com.woniuxy.b_parametertype.User"
+		但是，mybatis允许我们省略 parameterType， 此时必须保证，s.insert()所传入的对象，拥有#{}中所描述的属性。
+		
+		再测试，我们传入一个不是User类型的对象，只要这个而对象拥有#{}中所描述的属性即可。 经过测试，这样是可以的！！
+		
+		再测试，我们传入一个Map，保证这个map的键值与#{}所描述的属性一致。 经过测试，这样也是可以的！！
+		
+		个人建议把parameterType明显地写出来！ 以提高程序可读性！！
+	 -->
+	<insert id="save" parameterType="User">
+		insert into user values(null, #{name}, #{birthday}, #{money})
+	</insert>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <!-- 
+ 	mapper元素的namespace本来是可以随便写的， 但是官方文档建议我们写成当前配置文件的包路径（用“.”隔开）
+  -->
+<mapper namespace="com.woniuxy.a_hello.UserMapper">
+	<!-- 注意，这里的类的路径，使用"."隔开的，而不是“/” -->
+	<insert id="save" parameterType="com.woniuxy.a_hello.User">
+		insert into user values(null, #{name}, #{birthday}, #{money})
+	</insert>
+	
+	<delete id="delete" parameterType="int"> 
+		delete from user where id = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.woniuxy.a_hello.User">
+		update user set name=#{name},birthday=#{birthday},money=#{money}
+		where id = #{id}
+	</update>
+	
+	<!-- 
+		注意：
+			1. 只要是查询语句，就一定有返回的结果集，那么就必须配置resultType指定使用什么类来封装结果集中的行！
+			2.resultType="User"并不能决定当前的查询语句，就会把查出的所有结果都存入一个User对象中！
+			3.当前查询语句所查出的结果，究竟会被封装到List中，还是一个User对象中，由调用的SqlSession的方法决定
+				如果调用的是 selectList，则把结果存入List中
+				如果调用的是 selectOne，则把结果存入一个User中
+	 -->
+	<select id="findAll" resultType="com.woniuxy.a_hello.User">
+		select * from user	
+	</select>
+	
+	
+	<select id="findOne" parameterType="int" resultType="com.woniuxy.a_hello.User">
+		select * from user	where id = #{id}
+	</select>
+</mapper>

@@ -1,0 +1,35 @@
+server:
+  port: 8000
+
+spring: 
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+      
+  datasource: 
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/prj?characterEncoding=UTF-8
+    username: root
+    password: ilovelaohan
+    
+logging: 
+  level: 
+    com: 
+      woniu: 
+        mapper: DEBUG     
+ 
+redis: 
+  host: 127.0.0.1
+  port: 6379
+  pool: 
+    max-idle: 8
+    min-idle: 0
+  timeout: 2000
+
+hottable: 
+  com.woniu.mapper.GlMapper,com.woniu.mapper.GaMapper,com.woniu.mapper.GbMapper    
+    
+
+  
+               

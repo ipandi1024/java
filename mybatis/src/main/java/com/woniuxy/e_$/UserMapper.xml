@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woniuxy.e_$.UserMapper">
+	<select id="find" parameterType="java.util.Map" resultType="User">
+		select * from user
+		order by #{col}
+	</select>
+	
+	<select id="find2" parameterType="java.util.Map" resultType="User">
+		select * from user
+		where name = #{name}
+	</select>
+</mapper>
+
